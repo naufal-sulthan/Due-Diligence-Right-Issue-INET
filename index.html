@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INET Due Diligence: Deep Dive Analyst Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Analyst Styles */
+        body {
+            background-color: #f5f5f4; /* Stone-100 - Warm Neutral */
+            color: #1c1917; /* Stone-900 */
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Georgia', serif; /* Editorial/Report feel */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            max-height: 400px;
+            margin: 0 auto;
+        }
+        .analyst-card {
+            background: white;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        .analyst-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-color: #d6d3d1;
+        }
+        .risk-high { border-left: 4px solid #dc2626; }
+        .risk-med { border-left: 4px solid #ea580c; }
+        .risk-low { border-left: 4px solid #16a34a; }
+        
+        /* Navigation Active State */
+        .nav-link.active {
+            border-bottom: 2px solid #ea580c;
+            color: #ea580c;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals (Stone) with Corporate Orange/Red/Green accents for sentiment -->
+    <!-- Application Structure Plan: 
+         1. Executive Header: Ticker, Price Context, and "Analyst Rating".
+         2. The Narrative Stress Test: "Internet Rakyat" Fact vs Fiction check.
+         3. Right Issue Forensics: Interactive Calculator for Dilution & Theoretical Price (Data from provided PDF).
+         4. Financial Health: Use of Funds visualization (Data from Realization Reports).
+         5. Competitive Landscape: Technical comparison.
+         6. Risk Assessment: Final verdict.
+         Designed to move from the "Story" (Hype) to the "Numbers" (Reality) to the "Verdict".
+    -->
+    <!-- Visualization & Content Choices:
+         - Doughnut Chart: Use of Funds (Goal: Show where money goes - Capex vs Opex).
+         - Bar Chart: Dilution Impact (Goal: Visualize the 3:4 ratio impact).
+         - Calculator: Interactive Input/Output for Share Price logic.
+         - Text Cards: Qualitative analysis of the "Internet Desa" claims.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-xl font-bold font-serif text-stone-800">Alpha<span class="text-orange-600">Research</span></span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <button onclick="scrollToSection('executive')" class="nav-link active inline-flex items-center px-1 pt-1 text-sm font-medium text-stone-900">Executive Summary</button>
+                        <button onclick="scrollToSection('narrative')" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-stone-500 hover:text-stone-700">Narasi Internet Desa</button>
+                        <button onclick="scrollToSection('rightissue')" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-stone-500 hover:text-stone-700">Forensik RI</button>
+                        <button onclick="scrollToSection('risks')" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-stone-500 hover:text-stone-700">Risk Assessment</button>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200">RATING: HIGH RISK</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Header Section -->
+        <section id="executive" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2">
+                <h1 class="text-4xl font-bold text-stone-900 mb-2">PT Sinergi Inti Andalan Prima Tbk (INET)</h1>
+                <p class="text-xl text-stone-500 font-serif italic">"Internet Masuk Desa: Revolusi Digital atau Dilusi Masif?"</p>
+                <div class="mt-6 prose prose-stone max-w-none">
+                    <p class="text-stone-700">
+                        <strong>Analyst Note:</strong> INET sedang melakukan Rights Issue (PMHMETD I) dengan rasio sangat agresif <strong>3:4</strong> di harga pelaksanaan <strong>Rp 250</strong>. Dokumen menunjukkan tanggal Cum Date di Januari 2026. Narasi pasar berfokus pada ekspansi infrastruktur ("Internet Rakyat"), namun data fundamental menunjukkan ketergantungan tinggi pada belanja modal anak usaha tanpa bukti kontrak pemerintah langsung dalam dokumen yang dilampirkan.
+                    </p>
+                </div>
+            </div>
+            <div class="lg:col-span-1">
+                <div class="analyst-card p-6 bg-stone-900 text-white border-none">
+                    <h3 class="text-sm font-medium text-stone-400 uppercase tracking-wider">Corporate Action Data</h3>
+                    <div class="mt-4 space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-stone-400">Ratio (Old:New)</span>
+                            <span class="font-bold text-orange-400">3 : 4</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-stone-400">Exercise Price</span>
+                            <span class="font-bold">Rp 250</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-stone-400">Cum Date (Reg)</span>
+                            <span class="font-bold">02 Jan 2026</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-stone-400">Warrant Series</span>
+                            <span class="font-bold">Series II Attached</span>
+                        </div>
+                        <div class="pt-4 border-t border-stone-700">
+                            <span class="block text-xs text-stone-500 mb-1">Impact Analysis</span>
+                            <div class="w-full bg-stone-700 rounded-full h-2">
+                                <div class="bg-red-500 h-2 rounded-full" style="width: 57%"></div>
+                            </div>
+                            <span class="text-xs text-red-400 mt-1 block">Potensi Dilusi Maksimal: 57.14%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 1: The Narrative Test -->
+        <section id="narrative" class="space-y-6">
+            <div class="border-l-4 border-stone-900 pl-4">
+                <h2 class="text-2xl font-bold text-stone-900">1. Validasi Narasi: "Internet Rakyat" (Fact Check)</h2>
+                <p class="text-stone-600 mt-1">Investigasi klaim keterlibatan proyek pemerintah vs realitas dokumen.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Fact vs Fiction Cards -->
+                <div class="analyst-card risk-med p-6">
+                    <h3 class="font-bold text-lg mb-4 flex items-center text-stone-800">
+                        <span class="bg-stone-200 text-stone-800 px-2 py-1 rounded text-xs mr-2">CLAIM</span>
+                        "Proyek Bakti Kominfo / Internet Desa"
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 flex items-center justify-center rounded-full bg-orange-100 text-orange-600 font-bold text-xs mt-1">?</div>
+                            <p class="ml-3 text-sm text-stone-600">
+                                <strong>Status Dokumen:</strong> Dalam seluruh lampiran Keterbukaan Informasi (Use of Funds, Prospektus Tambahan), 
+                                <span class="bg-yellow-100 px-1">TIDAK DITEMUKAN</span> kontrak spesifik tertanda tangan dengan BAKTI Kominfo secara langsung atas nama INET.
+                            </p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 flex items-center justify-center rounded-full bg-stone-100 text-stone-600 font-bold text-xs mt-1">i</div>
+                            <p class="ml-3 text-sm text-stone-600">
+                                <strong>Model Bisnis:</strong> INET beroperasi sebagai <em>Network Provider</em> (B2B). Mereka membangun kabel fiber (melalui anak usaha PT Pusat Fiber Indonesia) dan menyewakannya ke ISP lokal yang melayani desa. 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analyst-card risk-low p-6">
+                    <h3 class="font-bold text-lg mb-4 flex items-center text-stone-800">
+                        <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-xs mr-2">FACT</span>
+                        Infrastruktur & Capex
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 font-bold text-xs mt-1">✓</div>
+                            <p class="ml-3 text-sm text-stone-600">
+                                <strong>Bukti Capex:</strong> Laporan Penggunaan Dana menunjukkan aliran dana masif ke anak usaha (PT Pusat Fiber Indonesia) sebesar <strong>Rp 90 Miliar</strong> (Rencana & Realisasi). Ini memvalidasi bahwa mereka benar-benar membeli aset (Kabel/Tiang).
+                            </p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 font-bold text-xs mt-1">✓</div>
+                            <p class="ml-3 text-sm text-stone-600">
+                                <strong>Manajemen:</strong> Tidak ditemukan catatan gagal bayar obligasi atau kasus hukum besar terkait proyek fiktif di masa lalu pada direksi saat ini (Muhammad Arif).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Verdict Text Block -->
+            <div class="analyst-card p-6 bg-stone-50">
+                <h4 class="font-bold text-stone-900">Analyst Verdict on Narrative:</h4>
+                <p class="text-sm text-stone-700 mt-2 leading-relaxed">
+                    Narasi "Internet Desa" adalah <strong>derivatif</strong>, bukan kontrak langsung. INET adalah "penjual pacul di tambang emas". Mereka menyediakan jalan tol (fiber optic) bagi ISP yang masuk desa. Ini model bisnis yang lebih aman daripada B2C, namun marginnya sangat bergantung pada volume sewa. Jangan berharap ada 'Breaking News' menang tender Bakti triliunan rupiah besok, karena sifatnya likely sub-kontraktor atau penyedia infrastruktur pasif.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: Financial Forensics -->
+        <section id="rightissue" class="space-y-6">
+            <div class="border-l-4 border-stone-900 pl-4">
+                <h2 class="text-2xl font-bold text-stone-900">2. Forensik Right Issue (Financial Check)</h2>
+                <p class="text-stone-600 mt-1">Analisis penggunaan dana dan dampak dilusi bagi pemegang saham ritel.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Use of Funds Analysis -->
+                <div class="analyst-card p-6">
+                    <h3 class="font-bold text-stone-800 mb-2">Jejak Uang (Use of Funds)</h3>
+                    <p class="text-xs text-stone-500 mb-4">Berdasarkan Laporan Realisasi Penggunaan Dana (Lampiran 4)</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="fundsChart"></canvas>
+                    </div>
+                    
+                    <div class="mt-4 text-sm text-stone-600">
+                        <p><strong>Analisis:</strong> Mayoritas dana IPO dan dana RI dialirkan ke <strong>Entitas Anak (Pusat Fiber Indonesia)</strong>. Ini positif karena bersifat Capex (Produktif), bukan sekadar bayar utang bank (Refinancing). Namun, ini membuat uang kas keluar dari induk dan menjadi aset tidak lancar.</p>
+                    </div>
+                </div>
+
+                <!-- Dilution Calculator -->
+                <div class="analyst-card p-6 bg-stone-800 text-white">
+                    <h3 class="font-bold text-orange-400 mb-2">Kalkulator Harga Teoritis & Dilusi</h3>
+                    <p class="text-xs text-stone-400 mb-6">Simulasikan posisi Anda jika tidak menebus Right.</p>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-stone-400">Harga Saham Anda Sekarang (Average Price)</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-stone-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" id="currentPrice" class="bg-stone-700 block w-full pl-12 sm:text-sm border-stone-600 rounded-md py-2 text-white placeholder-stone-400 focus:ring-orange-500 focus:border-orange-500" placeholder="e.g. 770" value="770">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-3 bg-stone-700 rounded text-center">
+                                <span class="block text-xs text-stone-400">Rasio Lama</span>
+                                <span class="block text-xl font-bold">3</span>
+                            </div>
+                            <div class="p-3 bg-stone-700 rounded text-center">
+                                <span class="block text-xs text-stone-400">Rasio Baru</span>
+                                <span class="block text-xl font-bold text-orange-400">4</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-stone-700 rounded flex justify-between items-center">
+                            <span class="text-sm text-stone-300">Harga Pelaksanaan (Exercise)</span>
+                            <span class="font-bold text-white">Rp 250</span>
+                        </div>
+
+                        <button onclick="calculate()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition duration-150">
+                            Hitung Dampak
+                        </button>
+
+                        <div id="resultBox" class="hidden mt-4 pt-4 border-t border-stone-600 animate-fade-in">
+                            <div class="grid grid-cols-2 gap-4 text-center">
+                                <div>
+                                    <span class="block text-xs text-stone-400">Harga Teoritis</span>
+                                    <span id="theoPrice" class="block text-2xl font-bold text-emerald-400">Rp 0</span>
+                                </div>
+                                <div>
+                                    <span class="block text-xs text-stone-400">Potensi Loss (Tanpa Tebus)</span>
+                                    <span id="dilutionLoss" class="block text-2xl font-bold text-red-500">0%</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-stone-400 mt-3 text-center italic">
+                                *Jika harga pasar saat cum date Rp <span id="displayInputPrice"></span>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Technical & Competition -->
+        <section class="space-y-6">
+             <div class="border-l-4 border-stone-900 pl-4">
+                <h2 class="text-2xl font-bold text-stone-900">3. Tinjauan Kompetisi & Teknis</h2>
+                <p class="text-stone-600 mt-1">Apakah INET bisa bersaing dengan Telkom/Indosat?</p>
+            </div>
+
+            <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                <table class="min-w-full divide-y divide-stone-300">
+                    <thead class="bg-stone-50">
+                        <tr>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-stone-900">Metrik</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-stone-900 text-orange-600">INET (Small Cap)</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-stone-900">Telkom/Big Telco</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-200 bg-white">
+                        <tr>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-stone-900">Biaya Gelar Fiber</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-stone-500">Rendah (Fokus tier 2/3 cities)</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-stone-500">Tinggi (Standar Tier 1)</td>
+                        </tr>
+                        <tr>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-stone-900">Model Bisnis</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-stone-500"><strong>Wholesale</strong> (Jual ke ISP Lokal)</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-stone-500">Retail (Indihome) & Wholesale</td>
+                        </tr>
+                        <tr>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-stone-900">Agility</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-stone-500">Tinggi (Kerjasama RT/RW Net)</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-stone-500">Rendah (Birokrasi Korporat)</td>
+                        </tr>
+                        <tr>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-stone-900">Coverage Desa</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-stone-500">Niche (Mengisi gap yang tidak dijangkau Big Telco)</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-stone-500">Dominan di Kecamatan Utama</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-sm text-stone-500 italic mt-2">Kesimpulan Kompetisi: INET tidak head-to-head dengan Telkom. Mereka memakan remah-remah pasar yang "terlalu kecil" bagi Telkom tapi menguntungkan bagi pemain kecil.</p>
+        </section>
+
+        <!-- Section 4: Risk Assessment -->
+        <section id="risks" class="space-y-6 pb-12">
+            <div class="border-l-4 border-stone-900 pl-4">
+                <h2 class="text-2xl font-bold text-stone-900">4. Risk Assessment & Kesimpulan</h2>
+                <p class="text-stone-600 mt-1">3 Risiko Terbesar yang Jarang Dibahas Influencer.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Risk 1 -->
+                <div class="analyst-card risk-high p-6">
+                    <h4 class="font-bold text-red-700 mb-2">1. Risiko Likuiditas (Standby Buyer)</h4>
+                    <p class="text-sm text-stone-600">
+                        Jika publik tidak menebus Rights, siapa yang ambil? Dokumen tidak secara eksplisit menonjolkan <em>Standby Buyer</em> tier 1 (Bank Asing/Lokal Besar). Jika rights tidak terserap dan tidak ada pembeli siaga kuat, aksi korporasi bisa kurang maksimal atau terjadi dilusi masif pada harga bawah.
+                    </p>
+                </div>
+                <!-- Risk 2 -->
+                <div class="analyst-card risk-high p-6">
+                    <h4 class="font-bold text-red-700 mb-2">2. Perang Harga ISP Desa</h4>
+                    <p class="text-sm text-stone-600">
+                        Barrier to entry ISP "RT/RW Net" rendah. INET menyewakan kabel ke mereka. Jika ISP lokal bangkrut karena perang harga (Starlink masuk, atau Telkomsel Orbit murah), klien INET hilang. Revenue INET sangat bergantung pada kesehatan finansial ISP-ISP kecil ini.
+                    </p>
+                </div>
+                <!-- Risk 3 -->
+                <div class="analyst-card risk-med p-6">
+                    <h4 class="font-bold text-orange-700 mb-2">3. Depresiasi Aset Fiber</h4>
+                    <p class="text-sm text-stone-600">
+                        Capex fiber optic itu mahal dan nilainya menyusut tiap tahun. Kabel bisa putus, dicuri, atau rusak cuaca. Biaya maintenance (Opex) akan membengkak seiring bertambahnya panjang kabel, menggerus laba bersih di masa depan.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-stone-900 text-white p-8 rounded-lg text-center mt-8">
+                <h3 class="text-2xl font-serif mb-4">Final Verdict</h3>
+                <div class="text-4xl font-bold text-orange-500 mb-2">MEDIUM-HIGH RISK</div>
+                <p class="text-stone-400 max-w-2xl mx-auto">
+                    Fundamental menunjukkan perusahaan bekerja (Capex real), tapi valuasi dan struktur Right Issue sangat agresif. Cocok untuk <strong>Short-term swing trading</strong> memanfaatkan volatilitas periode tebus, tapi <strong>Sangat Berisiko untuk Long Term Hold</strong> bagi investor konservatif karena ketidakpastian arus kas ISP desa.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-stone-200 pt-8 pb-12">
+            <p class="text-center text-xs text-stone-400">
+                Disclaimer: Laporan ini adalah simulasi Due Diligence berdasarkan dokumen publik yang disediakan. Bukan saran investasi/ajakan membeli. Segala keputusan investasi tanggung jawab pribadi. Data diolah dari Prospektus INET 2025/2026.
+            </p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            
+            // Update active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active', 'text-stone-900');
+                link.classList.add('text-stone-500');
+            });
+            event.target.classList.add('active', 'text-stone-900');
+            event.target.classList.remove('text-stone-500');
+        }
+
+        // --- Chart 1: Use of Funds (Based on IPO/Rights Data) ---
+        function renderUseOfFunds() {
+            const ctx = document.getElementById('fundsChart').getContext('2d');
+            
+            // Data taken from "Laporan Penggunaan Dana" lampiran
+            // Shows heavy allocation to Anak Usaha (Pusat Fiber & Data Prima)
+            const data = {
+                labels: ['PT Pusat Fiber Indo (Capex)', 'PT Data Prima (Capex)', 'Working Capital (Induk)'],
+                datasets: [{
+                    label: 'Alokasi Dana (Miliar Rp)',
+                    data: [90, 30, 28.5], // Rough approximation from Lampiran 4
+                    backgroundColor: [
+                        '#059669', // Emerald 600 - Good (Assets)
+                        '#10b981', // Emerald 500
+                        '#a8a29e'  // Stone 400 - Neutral
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            };
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { family: 'Inter' }, usePointStyle: true }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': Rp ' + context.raw + ' M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Calculator Logic ---
+        function calculate() {
+            // Get inputs
+            const oldPrice = parseFloat(document.getElementById('currentPrice').value);
+            const oldRatio = 3;
+            const newRatio = 4;
+            const exercisePrice = 250;
+
+            // Theoretical Price Formula: ((OldPrice * OldRatio) + (ExercisePrice * NewRatio)) / (OldRatio + NewRatio)
+            const totalVal = (oldPrice * oldRatio) + (exercisePrice * newRatio);
+            const totalShares = oldRatio + newRatio;
+            const theoreticalPrice = totalVal / totalShares;
+
+            // Calculate Dilution Loss (if holding without exercising)
+            // Value drops from OldPrice to TheoreticalPrice
+            const lossPct = ((oldPrice - theoreticalPrice) / oldPrice) * 100;
+
+            // Display Results
+            document.getElementById('displayInputPrice').innerText = oldPrice.toLocaleString('id-ID');
+            document.getElementById('theoPrice').innerText = "Rp " + Math.round(theoreticalPrice).toLocaleString('id-ID');
+            
+            const lossEl = document.getElementById('dilutionLoss');
+            lossEl.innerText = "-" + lossPct.toFixed(2) + "%";
+            
+            // Reveal box
+            const resultBox = document.getElementById('resultBox');
+            resultBox.classList.remove('hidden');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderUseOfFunds();
+            
+            // Pre-calculate based on default value
+            calculate();
+            
+            // Add Enter key listener for input
+            document.getElementById('currentPrice').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    calculate();
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
